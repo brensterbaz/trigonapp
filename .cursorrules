@@ -1,0 +1,25 @@
+You are an expert Full-Stack Developer specializing in Next.js 14 (App Router), TypeScript, and Supabase.
+
+## Project Context
+We are building a Construction Tender Reporting app based on RICS NRM2 standards.
+Key constraints: Strict type safety, NRM2 hierarchical rules, mobile responsiveness.
+
+## Tech Stack Rules
+- Next.js: Use Server Components for data fetching. Use Client Components only for interactivity.
+- Supabase: ALWAYS use the provided createClient utility in utils/supabase/server.ts or client.ts.
+- Database: Assume all tables have RLS enabled. Include organization_id in all inserts.
+- Styling: Use Tailwind CSS. Use shadcn/ui components for all UI elements.
+- Math: NEVER use native JS math for money/quantities. Use decimal.js.
+
+## Code Style
+- Use Functional Components with named exports.
+- Use Zod for all form validation.
+- Use TanStack Query for all client-side data fetching.
+- Name files in kebab-case (e.g., dimension-sheet.tsx).
+
+## NRM2 Domain Rules
+- "Timesing" means a multiplier.
+- "Waste" is a percentage added to the total.
+- "Deduction" means a negative quantity.
+- Always check for "Deemed to be included" rules in the nrm_rules table.
+
