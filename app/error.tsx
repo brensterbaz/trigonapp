@@ -32,7 +32,14 @@ export default function Error({
         <CardContent className="space-y-4">
           {error.message && (
             <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-              {error.message}
+              <p className="font-semibold mb-1">Error Details:</p>
+              <p>{error.message}</p>
+            </div>
+          )}
+          {error.digest && (
+            <div className="rounded-md bg-muted p-3 text-xs text-muted-foreground">
+              <p className="font-semibold mb-1">Error ID:</p>
+              <p className="font-mono">{error.digest}</p>
             </div>
           )}
           <div className="flex gap-2">
@@ -41,10 +48,10 @@ export default function Error({
             </Button>
             <Button
               variant="outline"
-              onClick={() => (window.location.href = '/dashboard')}
+              onClick={() => (window.location.href = '/sign-in')}
               className="flex-1"
             >
-              Go to Dashboard
+              Go to Sign In
             </Button>
           </div>
         </CardContent>

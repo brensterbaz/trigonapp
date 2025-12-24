@@ -8,43 +8,68 @@ import Link from 'next/link'
 import type { Project } from '@/types/database'
 
 export default async function DashboardPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  try {
+    const supabase = await createClient()
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser()
 
-  if (!user) {
-    redirect('/sign-in')
-  }
+    if (authError) {
+      console.error('Auth error in dashboard page:', authError)
+      redirect('/sign-in')
+    }
 
-  // Fetch user's organization
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('organization_id, full_name')
-    .eq('user_id', user.id)
-    .maybeSingle()
+    if (!user) {
+      redirect('/sign-in')
+    }
 
-  const { data: organization } = profile && (profile as any).organization_id
-    ? await supabase
-        .from('organizations')
-        .select('name, subscription_tier')
-        .eq('id', (profile as any).organization_id)
-        .maybeSingle()
-    : { data: null }
+    // Fetch user's organization
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('organization_id, full_name')
+      .eq('user_id', user.id)
+      .maybeSingle()
 
-  // Fetch projects
-  const { data: projects } = await supabase
-    .from('projects')
-    .select('*')
-    .eq('organization_id', (profile as any)?.organization_id || '')
-    .order('updated_at', { ascending: false })
-    .limit(5)
+    if (profileError) {
+      console.error('Profile fetch error:', profileError)
+    }
 
-  // Fetch project stats
-  const { data: allProjects } = await supabase
-    .from('projects')
-    .select('status')
-    .eq('organization_id', (profile as any)?.organization_id || '')
+    const organizationId = (profile as any)?.organization_id
+
+    const { data: organization } = organizationId
+      ? await supabase
+          .from('organizations')
+          .select('name, subscription_tier')
+          .eq('id', organizationId)
+          .maybeSingle()
+      : { data: null }
+
+    // Fetch projects
+    const { data: projects, error: projectsError } = organizationId
+      ? await supabase
+          .from('projects')
+          .select('*')
+          .eq('organization_id', organizationId)
+          .order('updated_at', { ascending: false })
+          .limit(5)
+      : { data: null, error: null }
+
+    if (projectsError) {
+      console.error('Projects fetch error:', projectsError)
+    }
+
+    // Fetch project stats
+    const { data: allProjects, error: statsError } = organizationId
+      ? await supabase
+          .from('projects')
+          .select('status')
+          .eq('organization_id', organizationId)
+      : { data: null, error: null }
+
+    if (statsError) {
+      console.error('Project stats fetch error:', statsError)
+    }
 
   const inProgressProjects = allProjects?.filter(p => p.status === 'in_progress').length || 0
   const draftProjects = allProjects?.filter(p => p.status === 'draft').length || 0
@@ -278,4 +303,18 @@ export default async function DashboardPage() {
       )}
     </div>
   )
+  } catch (error) {
+    console.error('Dashboard page error:', error)
+    // Return a simple error message
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Error</h1>
+          <p className="text-muted-foreground">
+            An error occurred while loading the dashboard. Please try refreshing the page.
+          </p>
+        </div>
+      </div>
+    )
+  }
 }

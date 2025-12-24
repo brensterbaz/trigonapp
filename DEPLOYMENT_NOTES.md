@@ -1,5 +1,45 @@
 # Deployment Notes
 
+## Required Environment Variables
+
+**CRITICAL**: You must set these environment variables in your Vercel project settings:
+
+1. Go to your Vercel project → Settings → Environment Variables
+2. Add the following variables:
+
+### Required Variables:
+- `NEXT_PUBLIC_SUPABASE_URL` - Your Supabase project URL
+  - Example: `https://xxxxxxxxxxxxx.supabase.co`
+  - Get this from: Supabase Dashboard → Settings → API → Project URL
+
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Your Supabase anonymous/public key
+  - Get this from: Supabase Dashboard → Settings → API → Project API keys → `anon` `public`
+
+### Optional (if using service role in API routes):
+- `SUPABASE_SERVICE_ROLE_KEY` - Your Supabase service role key (keep this secret!)
+  - Get this from: Supabase Dashboard → Settings → API → Project API keys → `service_role` `secret`
+  - ⚠️ **Never expose this in client-side code**
+
+### After Adding Variables:
+1. **Redeploy** your application for changes to take effect
+2. Environment variables are available at build time and runtime
+
+## Common Deployment Errors
+
+### Error: "Missing Supabase environment variables"
+- **Solution**: Ensure `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set in Vercel
+- Check that variable names match exactly (case-sensitive)
+
+### Error: "500 Internal Server Error" on `/dashboard`
+- **Solution**: 
+  1. Verify environment variables are set correctly
+  2. Check Vercel deployment logs for specific error messages
+  3. Ensure your Supabase project is active (not paused)
+  4. Verify database migrations have been run in Supabase
+
+### Error: "MIDDLEWARE_INVOCATION_FAILED"
+- **Solution**: This has been fixed in the latest code. Ensure you've pushed the latest changes to GitHub.
+
 ## Deprecation Warnings
 
 The following deprecation warnings may appear during deployment but **do not prevent the build from succeeding**:
