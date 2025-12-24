@@ -681,7 +681,7 @@ export function NRM2CMSManager() {
             </Select>
             {sections.length === 0 && !isSectionsLoading && (
               <p className="text-sm text-destructive">
-                No sections found. Click "Add Section" to create one.
+                No sections found. Click &quot;Add Section&quot; to create one.
               </p>
             )}
           </div>
@@ -880,7 +880,7 @@ export function NRM2CMSManager() {
                       </p>
                       {addAsSibling && (
                         <p className="mt-1 text-xs italic">
-                          This will be at the same level ({getLevelName(selectedParent.level)}) as "{selectedParent.content}"
+                          This will be at the same level ({getLevelName(selectedParent.level)}) as &quot;{selectedParent.content}&quot;
                         </p>
                       )}
                     </div>
@@ -1053,7 +1053,7 @@ export function NRM2CMSManager() {
                   required
                 />
                 <p className="text-xs text-muted-foreground">
-                  Section code (e.g., "01", "14", "42"). Must be unique.
+                  Section code (e.g., &quot;01&quot;, &quot;14&quot;, &quot;42&quot;). Must be unique.
                 </p>
               </div>
               <div className="space-y-2">
